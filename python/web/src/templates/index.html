@@ -35,7 +35,7 @@
     <input type="submit" value="{{ _("Save") }}">
 </form></p>
 
-<table border="black" cellpadding="3">
+<table id="devices" border="black" cellpadding="3">
     <tbody>
         <tr>
             <td><b>{{ _("ID") }}</b></td>
@@ -161,7 +161,7 @@
     </ul>
 </details>
 
-<table border="black" cellpadding="3">
+<table id="images" border="black" cellpadding="3">
     <tbody>
         <tr style="font-weight: bold;">
             <td>{{ _("File") }}</td>
@@ -323,7 +323,7 @@
         </li>
     </ul>
 </details>
-<table border="black" cellpadding="3">
+<table id="attach-peripheral-devices" border="black" cellpadding="3">
     <tr style="font-weight: bold;">
         <td>{{ _("Peripheral") }}</td>
         <td>{{ _("Parameters and Actions") }}</td>
@@ -433,7 +433,7 @@
     </ul>
 </details>
 
-<table style="border: none">
+<table id="download-to-image" style="border: none">
     <tr style="border: none">
         <td style="border: none; vertical-align:top;">
             <form action="/files/download_to_images" method="post">
@@ -495,7 +495,7 @@
         <li>{{ _("If the downloaded file is a zip archive, we will attempt to unzip it and store the resulting files.") }}</li>
     </ul>
 </details>
-<table style="border: none">
+<table id="download-to-cdrom-image" style="border: none">
     <tr style="border: none">
         <td style="border: none; vertical-align:top;">
             <label for="scsi_id">{{ _("SCSI ID:") }}</label>
@@ -642,7 +642,7 @@
         <li>{{ _("The current dropdown selection indicates the active log level.") }}</li>
     </ul>
 </details>
-<table style="border: none">
+<table id="set-log-level" style="border: none">
     <tr style="border: none">
         <td style="border: none; vertical-align:top;">
             <form action="/logs/level" method="post">
@@ -670,7 +670,7 @@
         <li>{{ _("Change the Web Interface language.") }}</li>
     </ul>
 </details>
-<table style="border: none">
+<table id="set-language" style="border: none">
     <tr style="border: none">
         <td style="border: none; vertical-align:top;">
             <form action="/language" method="post">

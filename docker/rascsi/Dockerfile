@@ -6,7 +6,7 @@ FROM "${OS_ARCH}/${OS_DISTRO}:${OS_VERSION}"
 EXPOSE 6868
 
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends sudo rsyslog patch
+RUN apt-get update && apt-get install -y --no-install-recommends sudo systemd rsyslog patch
 
 RUN groupadd pi
 RUN useradd --create-home --shell /bin/bash -g pi pi
