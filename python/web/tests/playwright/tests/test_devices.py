@@ -28,7 +28,7 @@ def test_attach_and_detach_image(page: Page) -> None:
     image_file_name = files.create_empty_disk_image()
 
     # Attach
-    scsi_id = devices.attach(image_file_name)
+    scsi_id = devices.attach_image(image_file_name)
     expect(page.locator(f"text=Attached {image_file_name} as Hard Disk to SCSI ID {scsi_id} LUN 0")).to_be_visible()
 
     # Detach

@@ -31,7 +31,7 @@ class IndexDeviceManagement:
         self.page.click(f"table#devices >> td:first-child >> text=\"{scsi_id}\" >> .. >> input[value='Release']")
 
 
-    def attach(self, image_file_name):
+    def attach_image(self, image_file_name):
         form = self.page.locator(f"table#images >> text={image_file_name} >> .. >> form")
         scsi_id = form.locator("select[name='scsi_id'] option:checked").text_content().strip()
         form.locator("input[value='Attach']").click()
