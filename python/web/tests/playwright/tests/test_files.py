@@ -3,68 +3,75 @@ from playwright.sync_api import Playwright, BrowserContext, Page, sync_playwrigh
 import uuid
 
 from models.index import Index
+from models.index_file_management import IndexFileManagement
+from models.index_device_management import IndexDeviceManagement
 
 def test_upload(page: Page) -> None:
     index = Index(page)
+    files = IndexFileManagement(page)
 
     # Upload
-    file_name = index.upload_file("assets/test_image.hds")
+    file_name = files.upload("assets/test_image.hds")
     expect(page.locator(".dz-success-mark")).to_be_visible()
     index.reload()
 
     # Cleanup
-    index.delete_file(file_name)
+    files.delete(file_name)
 
 
 def test_rename(page: Page) -> None:
     index = Index(page)
+    files = IndexFileManagement(page)
 
     # Setup
-    file_name = index.create_empty_disk_image()
+    file_name = files.create_empty_disk_image()
     new_file_name = f"{uuid.uuid4()}.tmp"
 
     # Rename
-    index.rename_file(file_name, new_file_name)
+    files.rename(file_name, new_file_name)
     expect(page.locator(f"text=Image file renamed to: {new_file_name}")).to_be_visible()
 
     # Cleanup
-    index.delete_file(new_file_name)
+    files.delete(new_file_name)
 
 
 def test_copy(page: Page) -> None:
     index = Index(page)
+    files = IndexFileManagement(page)
 
     # Setup
-    file_name = index.create_empty_disk_image()
+    file_name = files.create_empty_disk_image()
     copied_file_name = f"{uuid.uuid4()}.copy"
 
     # Copy
-    index.copy_file(file_name, copied_file_name)
+    files.copy(file_name, copied_file_name)
     expect(page.locator(f"text=Copy of image file saved as: {copied_file_name}")).to_be_visible()
 
     # Cleanup
-    index.delete_file(file_name)
-    index.delete_file(copied_file_name)
+    files.delete(file_name)
+    files.delete(copied_file_name)
 
 
 def test_extract(page: Page) -> None:
     index = Index(page)
+    files = IndexFileManagement(page)
 
     # Setup
-    archive_file_name = index.upload_file("assets/test_image.hds.zip")
+    archive_file_name = files.upload("assets/test_image.hds.zip")
     index.reload()
 
     # Extract
-    index.extract_archive(archive_file_name)
+    files.extract(archive_file_name)
     expect(page.locator("text=Extracted 1 file(s)"))
 
     # Cleanup
-    index.delete_file(archive_file_name)
-    index.delete_file("test_image.hds")
+    files.delete(archive_file_name)
+    files.delete("test_image.hds")
 
 
 def test_download_url_to_images_dir(page: Page, httpserver):
     index = Index(page)
+    files = IndexFileManagement(page)
 
     # Setup
     image_file_name = str(uuid.uuid4())
@@ -80,15 +87,17 @@ def test_download_url_to_images_dir(page: Page, httpserver):
     )
 
     # Download from URL
-    index.download_url_to_images_dir(url)
+    files.download_url_to_images_dir(url)
     expect(page.locator(f"text={image_file_name} downloaded to /home/pi/images")).to_be_visible()
 
     # Cleanup
-    index.delete_file(image_file_name)
+    files.delete(image_file_name)
 
 
 def test_download_to_cdrom_image(page: Page, httpserver):
     index = Index(page)
+    files = IndexFileManagement(page)
+    devices = IndexDeviceManagement(page)
 
     # Setup
     image_file_name = str(uuid.uuid4())
@@ -104,13 +113,11 @@ def test_download_to_cdrom_image(page: Page, httpserver):
     )
 
     # Download from URL + create ISO + attach
-    scsi_id = index.download_url_to_cdrom_image(url)
+    scsi_id = files.download_url_to_cdrom_image(url)
     expect(page.locator(f"text=Created CD-ROM ISO image with arguments \"-hfs\"")).to_be_visible()
     expect(page.locator(f"text=Saved image as: /home/pi/images/{image_file_name}.iso")).to_be_visible()
 
     # Cleanup
-    index.eject_device(scsi_id)
-    index.detach_device(scsi_id)
-    index.delete_file(f"{image_file_name}.iso")
-
-
+    devices.eject(scsi_id)
+    devices.detach(scsi_id)
+    files.delete(f"{image_file_name}.iso")
