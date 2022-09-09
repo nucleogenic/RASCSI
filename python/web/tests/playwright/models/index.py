@@ -1,6 +1,6 @@
 class Index:
     """
-    Page object modal for index page
+    Page object model for index page
     """
 
     def __init__(self, page):
