@@ -77,10 +77,6 @@ jobs:
         run: |
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make -j $(nproc) -C $SOURCES coverage
 
-      - name: Generate coverage (SonarCloud build-wrapper disabled)
-        run: |
-          make -j $(nproc) -C $SOURCES coverage
-
       - name: Run gcov
         run: (cd $SOURCES ; gcov --preserve-paths $(find -name '*.gcno'))
 
