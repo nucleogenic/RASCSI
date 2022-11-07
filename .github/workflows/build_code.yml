@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Add armhf as architecture
       run: sudo dpkg --add-architecture armhf
@@ -52,7 +52,7 @@ jobs:
       working-directory: ./cpp
 
     - name: upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: arm-binaries
         path: ./cpp/rascsi.tar.gz
