@@ -39,10 +39,12 @@ jobs:
     if: github.repository == 'akuker/RASCSI'
     env:
       SOURCES: cpp
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
       SONAR_SCANNER_VERSION: 4.7.0.2747
       SONAR_SERVER_URL: "https://sonarcloud.io"
-      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_PROJECT_KEY: "akuker_RASCSI"
+      SONAR_ORGANIZATION: "rascsi"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -84,5 +86,14 @@ jobs:
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd $SOURCES | sonar-scanner --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" --define sonar.projectKey=akuker_RASCSI --define sonar.organization=rascsi --define sonar.cfamily.gcov.reportsPath=. --define sonar.cfamily.cache.enabled=false --define sonar.coverage.exclusions="**/test/**" --define sonar.cpd.exclusions="**test/**" --define sonar.python.version=3
+        run: >-
+          cd $SOURCES && sonar-scanner
+          --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
+          --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
+          --define sonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+          --define sonar.organization=${{ env.SONAR_ORGANIZATION }}
+          --define sonar.cfamily.gcov.reportsPath=.
+          --define sonar.cfamily.cache.enabled=false
+          --define sonar.coverage.exclusions="**/test/**"
+          --define sonar.cpd.exclusions="**test/**"
+          --define sonar.python.version=3
