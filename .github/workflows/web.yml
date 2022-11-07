@@ -1,0 +1,31 @@
+name: Web UI workflow
+
+on:
+  pull_request:
+  push:
+    paths:
+      - 'python/web/**'
+      - 'python/common/**'
+      - '.github/workflows/web.yml'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python/web
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.7.15
+          cache: 'pip'
+
+      - run: pip install -r requirements-dev.txt
+        id: pip
+
+      - run: black --check tests
+
+      - run: flake8 tests
+        if: success() || failure() && steps.pip.outcome == 'success'
